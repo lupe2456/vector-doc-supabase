@@ -1,0 +1,7 @@
+<div class="home-container">
+    <h2>Subir PDF para vectorizar</h2>
+    <div class="upload-box">
+        <input type="file" (change)="onFileChange($event)" accept="application/pdf" />
+        <button (click)="upload()" [disabled]="!selectedFile">Enviar</button>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+{
+    "/webhook": {
+        "target": "https://dev-academy.n8n.itelisoft.org",
+        "secure": false,
+        "changeOrigin": true
+    }
+}
