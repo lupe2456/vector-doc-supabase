@@ -3,16 +3,18 @@
 
     <div class="upload-box">
         <input type="file" accept="application/pdf" (change)="onFileChange($event)" />
+        <input type="text" [(ngModel)]="customName" name="customName" placeholder="Nombre personalizado" required />
         <button (click)="upload()" [disabled]="!selectedFile">Subir</button>
     </div>
 
     <h3>Documentos cargados</h3>
     <div class="docs-list" *ngIf="docs.length > 0; else noDocs">
         <div class="doc-item" *ngFor="let doc of docs">
-            <span (click)="viewPdf(doc.url)">{{ doc.name }}</span>
-            <button class="delete" (click)="deleteDoc(doc.id)">🗑️</button>
+          <span (click)="viewPdf(doc.url)">{{ doc.name }}</span>
+          <button class="delete" (click)="deleteDoc(doc.uuid)">🗑️</button>
         </div>
-    </div>
+      </div>
+      
     <ng-template #noDocs>
         <p>No hay documentos cargados.</p>
     </ng-template>

@@ -14,7 +14,8 @@ const n8nWebhookDelete = '/webhook/esme-delete-doc';
 export class HomeComponent {
   selectedFile: File | null = null;
   selectedPdfUrl: string | null = null;
-  docs: { id: string; name: string; url: string }[] = [];
+  docs: { uuid: string; name: string; url: string }[] = [];
+  customName: string = '';
 
   ngOnInit() {
     this.loadDocs();
@@ -25,10 +26,11 @@ export class HomeComponent {
   }
 
   upload() {
-    if (!this.selectedFile) return;
+    if (!this.selectedFile || !this.customName.trim()) return;
 
     const formData = new FormData();
     formData.append('file', this.selectedFile);
+    formData.append('name', this.customName); // nuevo campo
 
     fetch(n8nWebhookUpload, {
       method: 'POST',
@@ -36,11 +38,9 @@ export class HomeComponent {
     })
       .then((res) => {
         if (!res.ok) throw new Error('Error al subir');
-        return res.json();
-      })
-      .then(() => {
         this.selectedFile = null;
-        this.loadDocs(); // Refresca lista
+        this.customName = '';
+        this.loadDocs();
       })
       .catch((err) => console.error('Error', err));
   }
@@ -50,7 +50,7 @@ export class HomeComponent {
       .then((res) => res.json())
       .then((data) => {
         this.docs = data.map((doc: any) => ({
-          id: doc.id,
+          uuid: doc.uuid, // ✅ Esta es la propiedad correcta
           name: doc.name,
           url: doc.url,
         }));
@@ -62,21 +62,22 @@ export class HomeComponent {
     this.selectedPdfUrl = url;
   }
 
-  deleteDoc(id: string) {
+  deleteDoc(uuid: string) {
+    console.log('🧾 UUID que se va a eliminar:', uuid);
+
     fetch(n8nWebhookDelete, {
-      method: 'POST',
+      method: 'DELETE', // debe coincidir con lo que acepta tu webhook
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ key: uuid }), // solo mandas lo que tu webhook necesita
     })
       .then((res) => {
+        console.log('📬 Respuesta del servidor:', res);
         if (!res.ok) throw new Error('Error al eliminar');
-        this.loadDocs(); // Refresca lista
-        if (this.selectedPdfUrl) {
-          this.selectedPdfUrl = null;
-        }
+        this.loadDocs();
+        this.selectedPdfUrl = null;
       })
-      .catch((err) => console.error('Error al eliminar', err));
+      .catch((err) => console.error('❌ Error al eliminar', err));
   }
 }
