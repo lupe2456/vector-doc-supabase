@@ -7,12 +7,14 @@ import { LoginComponent } from './auth/login/login.component';
 import { HomeComponent } from './home/home.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { SafeUrlPipe } from './pipes/safe-url.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    HomeComponent
+    HomeComponent,
+    SafeUrlPipe
   ],
   imports: [
     BrowserModule,
